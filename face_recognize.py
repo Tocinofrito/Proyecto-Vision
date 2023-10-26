@@ -13,6 +13,13 @@ haar_file = 'haarcascade_frontalface_default.xml'
 # path to the main faces directory which contains all the sub_datasets
 datasets = 'faces'
 
+#############################################################
+#Pruebas de gradiente video tiempo real
+#Kernel Sobel (Marcaré con "KS")
+hx = numpy.array([[-1,0,1],[2,0,2],[-1,0,1]])/8
+hy = numpy.array([[-1,-2,-1],[0,0,0],[1,2,1]])
+
+
 print('Training classifier...')
 # Create a list of images and a list of corresponding names along with a unique id
 (images, labels, names, id) = ([], [], {}, 0)
@@ -94,6 +101,21 @@ while True:
             print("predicted person: Unknown")
 
     # show window and set the window title
+    #KS
+    # Aplicando filtro gauss,x, y, xy
+    im = cv2.GaussianBlur(im, (5,5),0)
+    a = cv2.filter2D(im, -1, hx)
+    b = cv2.filter2D(im, -1, hy)
+    c = cv2.filter2D(a, -1, hy)
+
+# Aplicando magnitud a las matrices
+    a = a ** 2
+    b = b ** 2
+    G = numpy.sqrt(a + b)
+
+# Escalamos los valores máximos y mínimos de G a 255
+    G = (G / G.max() * 255).astype(numpy.uint8)
+    
     cv2.imshow('OpenCV Face Recognition -  esc to close', im)
     key = cv2.waitKey(10)
     # esc to quit applet
