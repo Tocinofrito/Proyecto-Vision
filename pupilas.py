@@ -1,15 +1,15 @@
 import cv2
 #video captura de la deteccion
-captura = cv2.videoCapture(0)
+captura = cv2.VideoCapture(0)
 captura.set(3,1280)
 captura.set(4,720)
 
 #ciclo infinito
-while true:
+while True:
     #realiza la lectura de la videocaptura
 
     ret, frame = captura.read()
-    if ret == false:
+    if ret == False:
         break
 
     #extraer el ancho y alto de los fotogramas
@@ -31,7 +31,7 @@ while true:
     cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0),2)
 
     #realizamos un recorte a nuestra zona de interes
-    recorte = frame(y1:y2, x1:x2)
+    recorte = frame[y1:y2, x1:x2]
 
     #pasamos el recorte a escala de grises
     gris = cv2.cvtColor(recorte, cv2.COLOR_BGR2GRAY)
@@ -40,7 +40,7 @@ while true:
     gris = cv2.GaussianBlur(gris, (3,3), 0) #entre mayor sea el kernel mas se desenfoca
 
     #aplicaremos un umbral para detectar la pupila por el color
-    _, umbral = cv2.thereshold(gris, 7, 255, cv2.THRESH_BINARY_INV)
+    _, umbral = cv2.threshold(gris, 7, 255, cv2.THRESH_BINARY_INV)
 
     #extraemos los contornos de la zona seleccionada
     contornos, _ = cv2.findContours(umbral, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
