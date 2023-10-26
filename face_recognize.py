@@ -11,7 +11,7 @@ import cv2, sys, numpy, os
 # haar_file path
 haar_file = 'haarcascade_frontalface_default.xml'
 # path to the main faces directory which contains all the sub_datasets
-datasets = 'C:/Users/Ismael/Documents/proyecto visión/face-recognition/faces'
+datasets = 'faces'
 
 print('Training classifier...')
 # Create a list of images and a list of corresponding names along with a unique id
@@ -58,7 +58,7 @@ def rounded_rectangle(img, pt1, pt2, color, thickness, r, d):
 (images, labels) = [numpy.array(lists) for lists in [images, labels]]
 
 # OpenCV trains a model from the images using the Local Binary Patterns algorithm
-model = cv2.face_LBPHFaceRecognizer.create()
+model = cv2.face.LBPHFaceRecognizer.create()
 # train the LBP algorithm on the images and labels we provided above
 model.train(images, labels)
 

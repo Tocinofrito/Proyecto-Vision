@@ -9,10 +9,10 @@ import cv2, numpy, sys, os, time
 # change the paths below to the location where these files are on your machine
 haar_file = 'haarcascade_frontalface_default.xml'
 # All of the faces data (images) will be stored here
-datasets = 'C:/Users/Ismael/Documents/proyecto visión/face-recognition/faces'
+datasets = 'faces'
 # Sub dataset in 'faces' folder. Each folder is specific to an individual person
 # change the name below when creating a new dataset for a new person
-sub_dataset = 'Ismael2'
+sub_dataset = 'Ismael'
 
 # join the paths to include the sub_dataset folder
 path = os.path.join(datasets, sub_dataset)

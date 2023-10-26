@@ -4,6 +4,7 @@ This OpenCV application can detect and recognize your face, in real-time (using 
 ![demo image](face-recognition_demo.png)
 
 To run it yourself, follow these steps:
+    In terminal: pip install opencv-contrib-python, then yo can run it
 1. Change the `sub_dataset` variable (in the `create_data.py` file) to the name of the person whose face you're going to store.
 2. Run `create_data.py` and wait for it to complete. Look into the camera at a few different angles and do this in a room with decent lighting.
 3. If everything goes well, you may run `face_recognize.py` and watch it detect and recognize your face! It may take a while to train the classifier depending on a number of factors (size of your datasets, your hardware, etc.)
