@@ -67,20 +67,19 @@ while True:
         #eje x:
         cv2.line(frame, (y1 + y + int(ancho/2),0), (an, y1 + y + + int(ancho/2)), (0,0,255),1)
         break
+    #mostramos el recorte en gris
+    cv2.imshow("ojos", frame)
 
-        #mostramos el recorte en gris
-        cv2.imshow("ojos", frame)
-
-        #mostramos el recorte 
-        cv2.imshow("Recorte", recorte)
+        #mostramos el recorte a
+    cv2.imshow("Recorte", recorte)
 
         #mostramos el umbral
-        cv2.imshow("Umbral", umbral)
+    cv2.imshow("Umbral", umbral)
 
-        t = cv2.waitKey(1)
+    t = cv2.waitKey(1)
 
-        if t == 27:
-            break
+    if t == 27:
+        break
 
     captura.release()
     cv2.destroyAllWindows()
