@@ -17,7 +17,7 @@ datasets = 'faces'
 #Pruebas de gradiente video tiempo real
 #Kernel Sobel (Marcaré con "KS")
 hx = numpy.array([[-1,0,1],[2,0,2],[-1,0,1]])/8
-hy = numpy.array([[-1,-2,-1],[0,0,0],[1,2,1]])
+hy = numpy.array([[-1,-2,-1],[0,0,0],[1,2,1]])/8
 
 
 print('Training classifier...')
@@ -116,7 +116,7 @@ while True:
 # Escalamos los valores máximos y mínimos de G a 255
     G = (G / G.max() * 255).astype(numpy.uint8)
     
-    cv2.imshow('OpenCV Face Recognition -  esc to close', im)
+    cv2.imshow('OpenCV Face Recognition -  esc to close', G)
     key = cv2.waitKey(10)
     # esc to quit applet
     if key == 27:
