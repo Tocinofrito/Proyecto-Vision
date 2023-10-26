@@ -30,6 +30,7 @@ for (subdirs, dirs, files) in os.walk(datasets):
 (width, height) = (130, 100)
 
 # https://www.life2coding.com/drawing-fancy-round-rectangle-using-opencv-python/
+#Se crea un tipo cuadro alrededor del rostro
 def rounded_rectangle(img, pt1, pt2, color, thickness, r, d):
     x1,y1 = pt1
     x2,y2 = pt2

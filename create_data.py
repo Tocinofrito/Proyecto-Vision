@@ -12,8 +12,11 @@ haar_file = 'haarcascade_frontalface_default.xml'
 datasets = 'faces'
 # Sub dataset in 'faces' folder. Each folder is specific to an individual person
 # change the name below when creating a new dataset for a new person
-sub_dataset = 'Ismael'
-
+##########################################################################
+print('¿Quién se tomará fotos?')
+name = input('Introduce el nombre en minúsculas: ')
+sub_dataset = name
+################################################
 # join the paths to include the sub_dataset folder
 path = os.path.join(datasets, sub_dataset)
 # if sub_dataset folder doesn't already exist, make the folder with the name defined above
@@ -32,10 +35,27 @@ print("Webcam is open? ", webcam.isOpened())
 time.sleep(2)
 #Takes pictures of detected face and saves them
 count = 1
+##############################################################################
+# Obtiene una lista de archivos en el directorio del subconjunto actual
+imagelist = os.listdir(path)
+
+# Busca el número de imagen más alto existente
+for image in imagelist:
+    if image.endswith('.png'):
+        image_num = int(image.split('.')[0])  # Extrae el número de archivo sin la extensión
+        if image_num >= count:
+            count = image_num + 1  # Actualiza el contador con el número más alto encontrado
+
+print(f"Iniciando de imagen {count}")
+
 print("Taking pictures...")
+#############################################
 # this takes 100 pictures of your face. Change this number if you want.
 # Having too many images, however, might slow down the program
-while count < 300:
+#Aquí cambiamos la condicion comentada para definir un  máximo de imagenes o tomará infinitamente
+
+#while count < n
+while True:
     # im = camera stream
     ret_val, im = webcam.read()
     # if it recieves something from the webcam...
