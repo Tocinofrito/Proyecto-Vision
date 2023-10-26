@@ -48,7 +48,7 @@ for image in imagelist:
 
 print(f"Iniciando de imagen {count}")
 
-print("Taking pictures...")
+print("Tomando Foto!...")
 #############################################
 # this takes 100 pictures of your face. Change this number if you want.
 # Having too many images, however, might slow down the program
@@ -81,6 +81,6 @@ while True:
         # press esc to stop the loop
         if key == 27:
             break
-print("Sub dataset for your face has been created.")
+print(f"El dataset de {name} ha sido creado.")
 webcam.release()
 cv2.destroyAllWindows()
