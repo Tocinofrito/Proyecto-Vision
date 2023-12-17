@@ -1,79 +1,66 @@
 import cv2
-#video captura de la deteccion
+import numpy as np
+
 captura = cv2.VideoCapture(0)
-captura.set(3,1280)
-captura.set(4,720)
+captura.set(3, 1280)
+captura.set(4, 720)
 
-#ciclo infinito
+# Load your custom image
+custom_image = cv2.imread('itachi.png', cv2.IMREAD_UNCHANGED)
+custom_image = cv2.resize(custom_image, (50, 50))  # Resize as needed
+
 while True:
-    #realiza la lectura de la videocaptura
-
     ret, frame = captura.read()
-    if ret == False:
+    if not ret:
         break
 
-    #extraer el ancho y alto de los fotogramas
     al, an, c = frame.shape
 
-    #tomando el centro de la imagen
-    #en x
-    x1 = int(an / 3) #tomamos 1/3 de la imagen
-    x2 = int(x1 * 2) #hasta el inicio del 3/3 de la imagen
+    x1 = int(an / 3)
+    x2 = int(x1 * 2)
 
-    #en y:
-    y1 = int(al / 3) #tomamos 1/3 de la imagen
-    y2 = int(y1 * 2) #hasta el inicio del 3/3 de la imagen
+    y1 = int(al / 3)
+    y2 = int(y1 * 2)
 
-    #texto
-    cv2.putText(frame, 'Ubique el ojo en el rectangulo,', (x1 - 50, y1 - 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),2)
+    cv2.putText(frame, 'Ubique el ojo en el rectangulo,', (x1 - 50, y1 - 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    #ubicar el rectangulo en las zonas extraidas
-    cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0),2)
+    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    #realizamos un recorte a nuestra zona de interes
     recorte = frame[y1:y2, x1:x2]
 
-    #pasamos el recorte a escala de grises
     gris = cv2.cvtColor(recorte, cv2.COLOR_BGR2GRAY)
+    _, umbral = cv2.threshold(gris, 30, 255, cv2.THRESH_BINARY)
+    umbral = cv2.GaussianBlur(umbral, (5, 5), 0)
 
-    #aplicamos un filtro Gaussiano para eliminar las pestañas
-    gris = cv2.GaussianBlur(gris, (3,3), 0) #entre mayor sea el kernel mas se desenfoca
+    contornos, _ = cv2.findContours(umbral, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    #aplicaremos un umbral para detectar la pupila por el color
-    _, umbral = cv2.threshold(gris, 7, 255, cv2.THRESH_BINARY_INV)
-
-    #extraemos los contornos de la zona seleccionada
-    contornos, _ = cv2.findContours(umbral, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #print(contornos)
-
-    #extaer area de los contornos
-    #ordenar del mas grande al mas pequeño
-    contornos = sorted(contornos, key=lambda x: cv2.contourArea(x), reverse=True)
-
-    #ibujamos los contornos extraidos
     for contorno in contornos:
-        #dibujamos el contorno
-        #cv2.drawContours(recorte, [contorno], -1, (0,255,0),2)
+        (x, y, ancho, alto) = cv2.boundingRect(contorno)
+        cv2.rectangle(frame, (x + x1, y + y1), (x + ancho + x1, y + alto + y1), (0, 255, 0), 1)
 
-        #dibujamos el rectangulo a partir del contorno
-        #extraemos las coordenadas
-        (x, y, ancho, alto) = cv2.boundinRect(contorno)
-        #dibujamos
-        cv2.rectangle(frame, (x +x1, y + y1), (x + ancho + x1, y + alto + y1), (0,255,0),1)
+        circulos = cv2.HoughCircles(gris[y:y + alto, x:x + ancho], cv2.HOUGH_GRADIENT, dp=1, minDist=20, param1=50, param2=30, minRadius=5, maxRadius=30)
 
-        #mostramos dos lineas a partir del centro del ojo
-        #eje y:
-        cv2.line(frame, (x1 + x + int(ancho/2),0), (x1 + x + int(ancho/2), al), (0,0,255),1)
-        #eje x:
-        cv2.line(frame, (y1 + y + int(ancho/2),0), (an, y1 + y + + int(ancho/2)), (0,0,255),1)
-        break
-    #mostramos el recorte en gris
+        if circulos is not None:
+            circulos = np.uint16(np.around(circulos))
+
+            for i in circulos[0, :]:
+                cv2.circle(frame, (i[0] + x + x1, i[1] + y + y1), i[2], (0, 255, 0), 2)
+
+                # Asegurarse de que las coordenadas estén dentro del rango
+                x_pupil = max(0, min(i[0] - i[2] + x1, frame.shape[1]))
+                y_pupil = max(0, min(i[1] - i[2] + y1, frame.shape[0]))
+
+                # Redimensionar la imagen personalizada al tamaño del círculo
+                custom_image_resized = cv2.resize(custom_image, (2 * i[2], 2 * i[2]))
+
+                # Extraer la región de la pupila
+                pupil_region = frame[y_pupil:y_pupil + 2 * i[2], x_pupil:x_pupil + 2 * i[2]]
+
+                # Verificar si las dimensiones coinciden y realizar la asignación
+                if pupil_region.shape == custom_image_resized.shape:
+                    frame[y_pupil:y_pupil + 2 * i[2], x_pupil:x_pupil + 2 * i[2]] = pupil_region * (1 - custom_image_resized[:, :, 3] / 255.0) + custom_image_resized[:, :, :3] * (custom_image_resized[:, :, 3] / 255.0)
+
     cv2.imshow("ojos", frame)
-
-        #mostramos el recorte a
-    cv2.imshow("Recorte", recorte)
-
-        #mostramos el umbral
     cv2.imshow("Umbral", umbral)
 
     t = cv2.waitKey(1)
@@ -81,5 +68,5 @@ while True:
     if t == 27:
         break
 
-    captura.release()
-    cv2.destroyAllWindows()
+captura.release()
+cv2.destroyAllWindows()

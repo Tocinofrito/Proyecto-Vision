@@ -6,13 +6,12 @@
 
 size = 4
 import cv2, sys, numpy, os
-
 # change the paths below to the location where these files are on your machine
 # haar_file path
 haar_file = 'haarcascade_frontalface_default.xml'
 # path to the main faces directory which contains all the sub_datasets
 datasets = 'faces'
-
+print(cv2.__version__)
 #############################################################
 #Pruebas de gradiente video tiempo real
 #Kernel Sobel (Marcaré con "KS")
@@ -67,6 +66,8 @@ def rounded_rectangle(img, pt1, pt2, color, thickness, r, d):
 
 # OpenCV trains a model from the images using the Local Binary Patterns algorithm
 model = cv2.face.LBPHFaceRecognizer.create()
+
+
 # train the LBP algorithm on the images and labels we provided above
 model.train(images, labels)
 
